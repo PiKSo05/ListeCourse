@@ -1,0 +1,14 @@
+{
+  "name": "listecourse",
+  "version": "1.0.0",
+  "description": "Création de liste de course",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Vincent Vilain",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^2.0.4"
+  }
+}
