@@ -2,15 +2,19 @@
 <html lang="fr">
 <head>
     <title>Ajouter un article dans la liste</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
 </head>
 <body>
-    <form>
-        <div>
-            <label>Entrer un article</label>
-            <input type="text" id="item" autofocus>
-        </div>
-        <button type="submit">add item</button>
-    </form>
+    <div class="container">
+        <form>
+            <div>
+                <label>Entrer un article</label>
+                <input type="text" id="item" autofocus>
+            </div>
+            <button class="btn waves-effect waves-light"
+            type="submit">add item</button>
+        </form>
+    </div>
 
     <script>
         const electron = require('electron');

@@ -4,6 +4,9 @@ const path = require('path');
 
 const {app, BrowserWindow, Menu, ipcMain} = electron;
 
+//set environment 
+process.env.NODE_ENV = 'production';
+
 let mainWindow;
 let addWindow;
 
@@ -51,7 +54,6 @@ function createAddWindow() {
 
 //catch item: add
 ipcMain.on('item:add', function(e, item){
-    console.log(item);
     mainWindow.webContents.send('item:add', item);
     addWindow.close();
 });
@@ -69,7 +71,10 @@ const mainMenuTemplate = [
                 }
             },
             {
-                label: 'Effacer Tout'
+                label: 'Effacer Tout',
+                click(){
+                    mainWindow.webContents.send('item:clear');
+                }
             },
             {
                 label: 'Fermer',
