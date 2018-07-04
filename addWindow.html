@@ -7,8 +7,24 @@
     <form>
         <div>
             <label>Entrer un article</label>
-            <input type="text" id="article" autofocus>
+            <input type="text" id="item" autofocus>
         </div>
+        <button type="submit">add item</button>
     </form>
+
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+
+        function submitForm(e){
+            e.preventDefault();
+            const item = document.querySelector('#item').value;
+            ipcRenderer.send('item:add', item);
+        }
+
+</script>
 </body>
 </html>
