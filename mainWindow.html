@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <title>Liste de courses</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-    </head>
+
+<head>
+    <title>Liste de courses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+</head>
+
 <body>
     <nav>
         <div class="nav-wrapper">
@@ -13,34 +15,65 @@
     <ul></ul>
     <script>
         const electron = require('electron');
-        const {ipcRenderer} = electron;
+        const { ipcRenderer } = electron;
         const ul = document.querySelector('ul');
-        
+        var Datastore = require('nedb')
+            , db = new Datastore({ filename: 'data_storage/listeDeCourse.nedb', autoload: true });
+
+        //load items 
+        db.find({}, function (err, docs) {
+            if (docs.length !== 0) {
+                docs.forEach(element => {
+                //console.log(element.article);
+                const li = document.createElement('li');
+                const itemText = document.createTextNode(element.article);
+                li.appendChild(itemText);
+                ul.appendChild(li);
+                ul.className = 'collection';
+                li.className = 'collection';
+                });
+            }
+        });
+
         //Add item
-        ipcRenderer.on('item:add', function(e, item){
+        ipcRenderer.on('item:add', function (e, item) {
             const li = document.createElement('li');
             const itemText = document.createTextNode(item);
             li.appendChild(itemText);
             ul.appendChild(li);
-            ul.className='collection';
-            li.className='collection';
-        });   
-        
+            ul.className = 'collection';
+            li.className = 'collection';
+
+            var documentDb = {
+                article: item,
+                dataAjout: new Date()
+            };
+            db.insert(documentDb, function (err, newDoc) {// Callback is optional
+                // newDoc is the newly inserted document, including its _id
+                // newDoc has no key called notToBeSaved since its value was undefined
+            });
+        });
+
         //clear items
-        ipcRenderer.on('item:clear', function(e){
+        ipcRenderer.on('item:clear', function (e) {
             ul.innerHTML = '';
-            ul.className='';
-        });    
+            ul.className = '';
+        });
 
         //remove item
         ul.addEventListener('dblclick', removeItem);
 
-        function removeItem(e){
-            e.target.remove();
-            if(ul.children.length == 0){
-                ul.className='';
+        function removeItem(e) {
+            console.log(e.target.innerHTML);
+            db.remove({ article: e.target.innerHTML }, function (err, numRemoved) {
+                e.target.remove();
+            });
+            
+            if (ul.children.length == 0) {
+                ul.className = '';
             }
         }
     </script>
 </body>
+
 </html>

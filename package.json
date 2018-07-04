@@ -12,7 +12,8 @@
   "author": "Vincent Vilain",
   "license": "MIT",
   "dependencies": {
-    "electron": "^2.0.4"
+    "electron": "^2.0.4",
+    "nedb": "^1.8.0"
   },
   "devDependencies": {
     "electron-packager": "^12.1.0"
