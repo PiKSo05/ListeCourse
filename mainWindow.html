@@ -9,70 +9,78 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a class="brand-logo center">Liste de courses</a>
+            <a class="brand-logo center">Tomate Verte</a>
         </div>
     </nav>
-    <ul></ul>
+
+    <div class="container">
+        <button id="btnAllumerLedVerte" class="btn waves-effect waves-light">Allumer LED Verte</button>
+    </div>
+    <div class="container">
+        <button id="btnEteindreLedVerte" class="btn waves-effect waves-light">Eteindre LED Verte</button>
+    </div>
+
+    <div class="container">
+        <button id="btnAllumerLedOrange" class="btn waves-effect waves-light">Allumer LED Orange</button>
+    </div>
+    <div class="container">
+        <button id="btnEteindreLedOrange" class="btn waves-effect waves-light">Eteindre LED Orange</button>
+    </div>
+
+    <div class="container">
+        <button id="btnAllumerLedRouge" class="btn waves-effect waves-light">Allumer LED Rouge</button>
+    </div>
+    <div class="container">
+        <button id="btnEteindreLedRouge" class="btn waves-effect waves-light">Eteindre LED Rouge</button>
+    </div>
+   
     <script>
         const electron = require('electron');
         const { ipcRenderer } = electron;
         const ul = document.querySelector('ul');
-        var Datastore = require('nedb')
-            , db = new Datastore({ filename: 'data_storage/listeDeCourse.nedb', autoload: true });
-
-        //load items 
-        db.find({}, function (err, docs) {
-            if (docs.length !== 0) {
-                docs.forEach(element => {
-                //console.log(element.article);
-                const li = document.createElement('li');
-                const itemText = document.createTextNode(element.article);
-                li.appendChild(itemText);
-                ul.appendChild(li);
-                ul.className = 'collection';
-                li.className = 'collection';
-                });
-            }
-        });
-
-        //Add item
-        ipcRenderer.on('item:add', function (e, item) {
-            const li = document.createElement('li');
-            const itemText = document.createTextNode(item);
-            li.appendChild(itemText);
-            ul.appendChild(li);
-            ul.className = 'collection';
-            li.className = 'collection';
-
-            var documentDb = {
-                article: item,
-                dataAjout: new Date()
-            };
-            db.insert(documentDb, function (err, newDoc) {// Callback is optional
-                // newDoc is the newly inserted document, including its _id
-                // newDoc has no key called notToBeSaved since its value was undefined
+        const request = require('request');
+     
+        function allumerLed(event) {
+            var couleur = event.target.Couleur;
+            var url = 'http://192.168.0.32:5000/allumerLed' + couleur + '/';
+            console.log("url:" + url);
+            request(url, { json: true }, (err, res, body) => {
+                if (err) { return console.log(err); }
             });
-        });
-
-        //clear items
-        ipcRenderer.on('item:clear', function (e) {
-            ul.innerHTML = '';
-            ul.className = '';
-        });
-
-        //remove item
-        ul.addEventListener('dblclick', removeItem);
-
-        function removeItem(e) {
-            console.log(e.target.innerHTML);
-            db.remove({ article: e.target.innerHTML }, function (err, numRemoved) {
-                e.target.remove();
-            });
-            
-            if (ul.children.length == 0) {
-                ul.className = '';
-            }
         }
+        function eteindreLed(event) {
+            var couleur = event.target.Couleur;
+            var url = 'http://192.168.0.32:5000/eteindreLed' + couleur + '/';
+            console.log("url:" + url);
+            request(url, { json: true }, (err, res, body) => {
+                if (err) { return console.log(err); }
+            });
+        }
+
+        const btnAllumerLedVerte = document.querySelector('#btnAllumerLedVerte');
+        btnAllumerLedVerte.addEventListener("click", allumerLed, false);
+        btnAllumerLedVerte.Couleur = 'Verte';
+
+        const btnEteindreLedVerte = document.querySelector('#btnEteindreLedVerte');
+        btnEteindreLedVerte.addEventListener("click", eteindreLed);
+        btnEteindreLedVerte.Couleur = 'Verte';
+        
+        const btnAllumerLedOrange = document.querySelector('#btnAllumerLedOrange');
+        btnAllumerLedOrange.addEventListener("click", allumerLed, false);
+        btnAllumerLedOrange.Couleur = 'Orange';
+
+        const btnEteindreLedOrange = document.querySelector('#btnEteindreLedOrange');
+        btnEteindreLedOrange.addEventListener("click", eteindreLed);
+        btnEteindreLedOrange.Couleur = 'Orange';
+        
+        const btnAllumerLedRouge = document.querySelector('#btnAllumerLedRouge');
+        btnAllumerLedRouge.addEventListener("click", allumerLed, false);
+        btnAllumerLedRouge.Couleur = 'Rouge';
+
+        const btnEteindreLedRouge = document.querySelector('#btnEteindreLedRouge');
+        btnEteindreLedRouge.addEventListener("click", eteindreLed);
+        btnEteindreLedRouge.Couleur = 'Rouge';
+
     </script>
 </body>
 
